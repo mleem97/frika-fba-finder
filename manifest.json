@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "FBA Finder",
-  "version": "1.0",
+  "version": "1.0.0",
   "description": "Filtert Amazon-Suchergebnisse nach FBA-Produkten und blendet Sponsored-Anzeigen aus.",
   "permissions": ["storage"],
   "icons": {
