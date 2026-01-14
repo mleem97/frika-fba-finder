@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FBA Finder Einstellungen</title>
+    <style>
+        :root {
+            --primary: #232F3E; /* Amazon Dark Blue */
+            --accent: #FF9900;  /* Amazon Orange */
+            --bg: #F3F4F6;
+            --card-bg: #FFFFFF;
+            --text-main: #111827;
+            --text-sub: #6B7280;
+            --border: #E5E7EB;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+        }
+
+        /* Header Area */
+        .header {
+            background-color: var(--primary);
+            color: white;
+            padding: 24px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .badge {
+            background-color: var(--accent);
+            color: var(--primary);
+            font-size: 11px;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        /* Content Area */
+        .content {
+            padding: 32px;
+        }
+
+        .section-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: var(--text-sub);
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: 1px;
+        }
+
+        /* Settings Rows */
+        .setting-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .setting-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .setting-info h3 {
+            margin: 0 0 4px 0;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .setting-info p {
+            margin: 0;
+            font-size: 13px;
+            color: var(--text-sub);
+            line-height: 1.4;
+        }
+
+        /* Custom Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+            flex-shrink: 0;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #E5E7EB;
+            transition: .3s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        input:checked + .slider {
+            background-color: var(--accent);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+
+        /* Select Dropdown styling */
+        select {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            background-color: white;
+            font-size: 14px;
+            outline: none;
+            cursor: pointer;
+        }
+        
+        select:focus {
+            border-color: var(--accent);
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #F9FAFB;
+            padding: 16px 32px;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            font-size: 12px;
+            color: var(--text-sub);
+        }
+
+        .footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Save Button Area */
+        .actions {
+            margin-top: 24px;
+            text-align: right;
+        }
+
+        .btn-save {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-save:hover {
+            background-color: #1a232f;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <div style="display:flex; align-items:center; gap:10px;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="background: rgba(255,255,255,0.2); padding: 6px; border-radius: 6px;">
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                    <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                </svg>
+                <h1>FBA Finder</h1>
+            </div>
+            <span class="badge">PRO</span>
+        </div>
+
+        <div class="content">
+            
+            <div class="section-title">Hauptfilter</div>
+
+            <div class="setting-row">
+                <div class="setting-info">
+                    <h3>Nicht-FBA ausblenden</h3>
+                    <p>Zeigt nur Produkte an, die von Amazon versandt werden.</p>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="toggleFba" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="setting-row">
+                <div class="setting-info">
+                    <h3>Gesponserte Produkte ausblenden</h3>
+                    <p>Entfernt Anzeigen und "Sponsored" Listings.</p>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="toggleAds" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div style="height: 10px;"></div>
+
+            <div class="section-title">Darstellung & Erweitert</div>
+
+            <div class="setting-row">
+                <div class="setting-info">
+                    <h3>Filter-Modus</h3>
+                    <p>Wie sollen gefilterte Produkte behandelt werden?</p>
+                </div>
+                <select id="viewMode">
+                    <option value="remove">Komplett entfernen</option>
+                    <option value="dim">Ausgrauen (Transparenz 50%)</option>
+                    <option value="red-border">Rot markieren</option>
+                </select>
+            </div>
+             <div class="setting-row">
+                <div class="setting-info">
+                    <h3>Strikter Prime Check</h3>
+                    <p>Filtert auch FBA-Angebote ohne Prime-Status.</p>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="togglePrime">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="actions">
+                <button class="btn-save" id="saveBtn">Einstellungen speichern</button>
+            </div>
+        </div>
+
+        <div class="footer">
+            FBA Finder v1.0.2 • <a href="#">Support kontaktieren</a> • <a href="#">Bewerten</a>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elemente
+        const toggleFba = document.getElementById('toggleFba');
+        const toggleAds = document.getElementById('toggleAds');
+        const togglePrime = document.getElementById('togglePrime');
+        const viewMode = document.getElementById('viewMode');
+        const saveBtn = document.getElementById('saveBtn');
+
+        // Einstellungen beim Laden abrufen
+        document.addEventListener('DOMContentLoaded', () => {
+            if (chrome.storage && chrome.storage.sync) {
+                chrome.storage.sync.get(['hideFBM', 'hideSponsored', 'strictPrime', 'viewMode', 'enabled'], (result) => {
+                    toggleFba.checked = result.hideFBM !== undefined ? result.hideFBM : true;
+                    toggleAds.checked = result.hideSponsored !== undefined ? result.hideSponsored : true;
+                    togglePrime.checked = result.strictPrime !== undefined ? result.strictPrime : false;
+                    viewMode.value = result.viewMode || 'remove';
+                });
+            }
+        });
+
+        // Einstellungen speichern
+        saveBtn.addEventListener('click', function() {
+            const settings = {
+                hideFBM: toggleFba.checked,
+                hideSponsored: toggleAds.checked,
+                strictPrime: togglePrime.checked,
+                viewMode: viewMode.value,
+                enabled: true
+            };
+
+            if (chrome.storage && chrome.storage.sync) {
+                chrome.storage.sync.set(settings, () => {
+                    // Visuelles Feedback
+                    const originalText = saveBtn.innerText;
+                    saveBtn.innerText = "Gespeichert!";
+                    saveBtn.style.backgroundColor = "#48bb78"; // Green
+                    setTimeout(() => {
+                        saveBtn.innerText = originalText;
+                        saveBtn.style.backgroundColor = "#232F3E"; // Back to Blue
+                    }, 1500);
+                });
+            } else {
+                // Fallback für lokale Entwicklung
+                console.log('Settings would be saved:', settings);
+                const originalText = saveBtn.innerText;
+                saveBtn.innerText = "Gespeichert!";
+                saveBtn.style.backgroundColor = "#48bb78";
+                setTimeout(() => {
+                    saveBtn.innerText = originalText;
+                    saveBtn.style.backgroundColor = "#232F3E";
+                }, 1500);
+            }
+        });
+    </script>
+</body>
+</html>
