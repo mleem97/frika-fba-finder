@@ -94,6 +94,10 @@ function filterAmazonProducts() {
         if (chrome.storage && chrome.storage.local) {
             chrome.storage.local.set({ hiddenCount: 0 });
         }
+        // Reset badge when disabled
+        if (chrome.runtime && chrome.runtime.sendMessage) {
+            chrome.runtime.sendMessage({ type: 'updateBadge', count: 0 });
+        }
         return;
     }
 
@@ -204,11 +208,15 @@ function countHiddenProducts() {
     return count;
 }
 
-// Speichere den Counter im Storage
+// Speichere den Counter im Storage und aktualisiere Badge
 function updateHiddenCount() {
     const count = countHiddenProducts();
     if (chrome.storage && chrome.storage.local) {
         chrome.storage.local.set({ hiddenCount: count });
+    }
+    // Send message to background service worker to update badge
+    if (chrome.runtime && chrome.runtime.sendMessage) {
+        chrome.runtime.sendMessage({ type: 'updateBadge', count: count });
     }
 }
 
