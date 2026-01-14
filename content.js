@@ -89,8 +89,11 @@ function hideProduct(product, reason) {
 
 // Hauptfunktion zum Filtern der Produkte
 function filterAmazonProducts() {
-    // Wenn deaktiviert, nichts tun
+    // Wenn deaktiviert, nichts tun und Counter auf 0 setzen
     if (!settings.enabled) {
+        if (chrome.storage && chrome.storage.local) {
+            chrome.storage.local.set({ hiddenCount: 0 });
+        }
         return;
     }
 
@@ -142,6 +145,9 @@ function filterAmazonProducts() {
         product.dataset.fbaFinderProcessed = 'true';
         product.dataset.fbaFinderHidden = 'false';
     });
+
+    // Update hidden count after filtering
+    updateHiddenCount();
 }
 
 // Alle Produkte wieder anzeigen (wenn Addon deaktiviert wird)
@@ -184,6 +190,27 @@ function debounce(func, wait) {
 
 // Debounced Version der Filter-Funktion
 const debouncedFilter = debounce(filterAmazonProducts, 100);
+
+// Counter für ausgeblendete Produkte
+function countHiddenProducts() {
+    const products = document.querySelectorAll('div[data-component-type="s-search-result"]');
+    let count = 0;
+    products.forEach(product => {
+        const hiddenReason = product.dataset.fbaFinderHidden;
+        if (hiddenReason && hiddenReason !== 'false') {
+            count++;
+        }
+    });
+    return count;
+}
+
+// Speichere den Counter im Storage
+function updateHiddenCount() {
+    const count = countHiddenProducts();
+    if (chrome.storage && chrome.storage.local) {
+        chrome.storage.local.set({ hiddenCount: count });
+    }
+}
 
 // MutationObserver für Lazy-Loading
 let observer = null;
@@ -245,6 +272,17 @@ async function init() {
         filterAmazonProducts();
         startObserver();
     }
+}
+
+// Message Listener für Popup-Anfragen
+if (chrome.runtime && chrome.runtime.onMessage) {
+    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+        if (request.action === 'getHiddenCount') {
+            const count = countHiddenProducts();
+            sendResponse({ hiddenCount: count });
+        }
+        return true; // Keep message channel open for async response
+    });
 }
 
 // Starten

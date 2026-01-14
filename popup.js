@@ -17,19 +17,49 @@ function updateStatusDot(enabled) {
 }
 
 /**
- * Load settings from chrome.storage.sync
+ * Load settings from chrome.storage.sync and counter from local
  */
 function loadSettings() {
     if (chrome.storage && chrome.storage.sync) {
-        chrome.storage.sync.get(['enabled', 'hiddenProductsCount'], (result) => {
+        chrome.storage.sync.get(['enabled'], (result) => {
             // Default to enabled if not set
             const isEnabled = result.enabled !== undefined ? result.enabled : true;
             toggleEnabled.checked = isEnabled;
             updateStatusDot(isEnabled);
+        });
+    }
+    
+    // Load hidden count from local storage
+    loadHiddenCount();
+}
 
-            // Load counter (placeholder - will be connected to content script later)
-            const count = result.hiddenProductsCount || 0;
+/**
+ * Load hidden count from chrome.storage.local and request fresh count from content script
+ */
+function loadHiddenCount() {
+    // First, try to get from storage
+    if (chrome.storage && chrome.storage.local) {
+        chrome.storage.local.get(['hiddenCount'], (result) => {
+            const count = result.hiddenCount || 0;
             hiddenCount.textContent = count.toString();
+        });
+    }
+    
+    // Then, request fresh count from content script in active tab
+    if (chrome.tabs) {
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            if (tabs[0] && tabs[0].id) {
+                chrome.tabs.sendMessage(tabs[0].id, { action: 'getHiddenCount' }, (response) => {
+                    // Check for errors (e.g., content script not loaded on non-Amazon pages)
+                    if (chrome.runtime.lastError) {
+                        // Silently ignore - content script might not be active on this page
+                        return;
+                    }
+                    if (response && response.hiddenCount !== undefined) {
+                        hiddenCount.textContent = response.hiddenCount.toString();
+                    }
+                });
+            }
         });
     }
 }
@@ -74,13 +104,17 @@ openSettingsBtn.addEventListener('click', () => {
 // Listen for storage changes to update counter in real-time
 if (chrome.storage && chrome.storage.onChanged) {
     chrome.storage.onChanged.addListener((changes, namespace) => {
+        // Listen for enabled state changes in sync storage
         if (namespace === 'sync') {
-            if (changes.hiddenProductsCount) {
-                hiddenCount.textContent = (changes.hiddenProductsCount.newValue || 0).toString();
-            }
             if (changes.enabled !== undefined) {
                 toggleEnabled.checked = changes.enabled.newValue;
                 updateStatusDot(changes.enabled.newValue);
+            }
+        }
+        // Listen for hidden count changes in local storage
+        if (namespace === 'local') {
+            if (changes.hiddenCount !== undefined) {
+                hiddenCount.textContent = (changes.hiddenCount.newValue || 0).toString();
             }
         }
     });
