@@ -47,7 +47,7 @@
 - [x] 4.1 Manifest.json Validierung durchführen
 - [x] 4.2 Code mit Prettier formatieren
 - [x] 4.3 Keine eval() oder unsicherer Code vorhanden prüfen
-- [ ] 4.4 CSP-Konformität sicherstellen (keine inline scripts)
+- [x] 4.4 CSP-Konformität sicherstellen (keine inline scripts)
 
 ### Phase 5: Launch-Vorbereitung
 
@@ -65,7 +65,7 @@
 | Phase 1 | ✅ Fertig | 11/11 |
 | Phase 2 | ✅ Fertig | 6/6 |
 | Phase 3 | ✅ Fertig | 6/6 |
-| Phase 4 | 🟡 In Arbeit | 3/4 |
+| Phase 4 | ✅ Fertig | 4/4 |
 | Phase 5 | 🔴 Ausstehend | 0/4 |
 
-**Gesamt: 26/31 Tasks abgeschlossen (84%)**
+**Gesamt: 27/31 Tasks abgeschlossen (87%)**
