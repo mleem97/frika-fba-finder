@@ -32,7 +32,7 @@
 ## 🔄 Ausstehende Tasks
 
 ### Phase 3: UX & Feinschliff
-- [ ] 3.1 popup.html erstellen (kompaktes Popup für Icon-Klick)
+- [x] 3.1 popup.html erstellen (kompaktes Popup für Icon-Klick)
 - [ ] 3.2 Statistik-Counter implementieren (ausgeblendete Produkte zählen)
 - [ ] 3.3 Badge-Text am Icon anzeigen (chrome.action.setBadgeText)
 - [ ] 3.4 Background Service Worker erstellen für Badge-Kommunikation
@@ -59,8 +59,8 @@
 |-------|--------|---------------|
 | Phase 1 | ✅ Fertig | 11/11 |
 | Phase 2 | ✅ Fertig | 6/6 |
-| Phase 3 | 🔴 Ausstehend | 0/6 |
+| Phase 3 | 🟡 In Arbeit | 1/6 |
 | Phase 4 | 🔴 Ausstehend | 0/4 |
 | Phase 5 | 🔴 Ausstehend | 0/4 |
 
-**Gesamt: 17/31 Tasks abgeschlossen (55%)**
+**Gesamt: 18/31 Tasks abgeschlossen (58%)**
