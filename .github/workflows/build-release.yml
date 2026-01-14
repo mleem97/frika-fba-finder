@@ -139,29 +139,37 @@ jobs:
           body: |
             ## FBA Finder v${{ steps.get_version.outputs.VERSION }}
             
-            ### 📦 Chrome Web Store Package
+            ### 📦 Download
             
-            **File:** `fba-finder-chrome-store-${{ steps.get_version.outputs.VERSION }}.zip`
+            Download the extension ZIP file below and install it in Chrome.
+            
+            **File:** `fba-finder-chrome-store-${{ steps.get_version.outputs.VERSION }}.zip`  
             **SHA256:** `${{ steps.checksum.outputs.CHECKSUM }}`
             
-            ### 🚀 Installation
+            ### 🚀 Installation Instructions
             
-            1. Download the ZIP file above
-            2. Go to `chrome://extensions/`
-            3. Enable "Developer mode"
-            4. Click "Load unpacked"
-            5. Extract the ZIP and select the folder
+            1. Download the ZIP file from the Assets section below
+            2. Open Chrome and go to `chrome://extensions/`
+            3. Enable **"Developer mode"** (toggle in top right)
+            4. Click **"Load unpacked"**
+            5. Extract the downloaded ZIP file
+            6. Select the extracted folder
             
-            ### 📤 Chrome Web Store Submission
+            ### ✨ Features
             
-            1. Go to [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole)
-            2. Click "New Item"
-            3. Upload this ZIP file
-            4. Fill in store listing details
+            - Filter Amazon products by FBA (Fulfilled by Amazon)
+            - Hide sponsored/promoted listings
+            - Works on 23 Amazon marketplaces worldwide
+            - Support for 15+ languages
+            - Customizable display modes
             
-            ### 📝 Changelog
+            ### 📝 What's New
             
-            See [CHANGELOG.md](CHANGELOG.md) for full details.
+            See [CHANGELOG.md](CHANGELOG.md) for detailed release notes.
+            
+            ### 🐛 Issues or Questions?
+            
+            Report bugs or request features in our [GitHub Issues](https://github.com/mleem97/frika-fba-finder/issues).
           draft: false
           prerelease: false
         env:
