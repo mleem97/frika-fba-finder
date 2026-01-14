@@ -53,8 +53,15 @@
 
 - [x] 5.1 README.md mit Installationsanleitung erstellen
 - [x] 5.2 CHANGELOG.md erstellen
-- [ ] 5.3 Privacy Policy Seite vorbereiten
+- [x] 5.3 Privacy Policy Seite vorbereiten
 - [ ] 5.4 Store-Beschreibung und Keywords vorbereiten
+
+
+### FINAL
+
+- [ ] 5.5 Cleeanup 
+- [ ] Release Version 1.0.0 vorbereiten und im Chrome Web Store einreichen
+
 
 ---
 
@@ -66,6 +73,6 @@
 | Phase 2 | ✅ Fertig | 6/6 |
 | Phase 3 | ✅ Fertig | 6/6 |
 | Phase 4 | ✅ Fertig | 4/4 |
-| Phase 5 | 🟡 In Arbeit | 2/4 |
+| Phase 5 | 🟡 In Arbeit | 3/4 |
 
-**Gesamt: 29/31 Tasks abgeschlossen (94%)**
+**Gesamt: 30/31 Tasks abgeschlossen (97%)**
