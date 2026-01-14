@@ -1,0 +1,4 @@
+.github
+icons/*.svg
+/ralph
+generate_icons.html
