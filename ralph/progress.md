@@ -36,7 +36,7 @@
 - [x] 3.2 Statistik-Counter implementieren (ausgeblendete Produkte zählen)
 - [x] 3.3 Badge-Text am Icon anzeigen (chrome.action.setBadgeText)
 - [x] 3.4 Background Service Worker erstellen für Badge-Kommunikation
-- [ ] 3.5 Popup mit Schnell-Toggle und Stats anzeigen
+- [x] 3.5 Popup mit Schnell-Toggle und Stats anzeigen
 - [ ] 3.6 Visual Feedback für aktiven Filter-Status
 
 ### Phase 4: Testing & Qualitätssicherung
@@ -59,8 +59,8 @@
 |-------|--------|---------------|
 | Phase 1 | ✅ Fertig | 11/11 |
 | Phase 2 | ✅ Fertig | 6/6 |
-| Phase 3 | 🟡 In Arbeit | 4/6 |
+| Phase 3 | 🟡 In Arbeit | 5/6 |
 | Phase 4 | 🔴 Ausstehend | 0/4 |
 | Phase 5 | 🔴 Ausstehend | 0/4 |
 
-**Gesamt: 21/31 Tasks abgeschlossen (68%)**
+**Gesamt: 22/31 Tasks abgeschlossen (71%)**

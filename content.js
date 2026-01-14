@@ -208,11 +208,39 @@ function countHiddenProducts() {
     return count;
 }
 
+// Detaillierte Statistiken nach Kategorie zählen
+function getDetailedStats() {
+    const products = document.querySelectorAll('div[data-component-type="s-search-result"]');
+    const stats = {
+        sponsored: 0,
+        fbm: 0,
+        noPrime: 0
+    };
+    
+    products.forEach(product => {
+        const hiddenReason = product.dataset.fbaFinderHidden;
+        if (hiddenReason === 'sponsored') {
+            stats.sponsored++;
+        } else if (hiddenReason === 'fbm') {
+            stats.fbm++;
+        } else if (hiddenReason === 'no-prime') {
+            stats.noPrime++;
+        }
+    });
+    
+    return stats;
+}
+
 // Speichere den Counter im Storage und aktualisiere Badge
 function updateHiddenCount() {
     const count = countHiddenProducts();
+    const detailedStats = getDetailedStats();
+    
     if (chrome.storage && chrome.storage.local) {
-        chrome.storage.local.set({ hiddenCount: count });
+        chrome.storage.local.set({ 
+            hiddenCount: count,
+            detailedStats: detailedStats
+        });
     }
     // Send message to background service worker to update badge
     if (chrome.runtime && chrome.runtime.sendMessage) {
@@ -288,6 +316,13 @@ if (chrome.runtime && chrome.runtime.onMessage) {
         if (request.action === 'getHiddenCount') {
             const count = countHiddenProducts();
             sendResponse({ hiddenCount: count });
+        } else if (request.action === 'getDetailedStats') {
+            const count = countHiddenProducts();
+            const detailedStats = getDetailedStats();
+            sendResponse({ 
+                hiddenCount: count,
+                detailedStats: detailedStats
+            });
         }
         return true; // Keep message channel open for async response
     });

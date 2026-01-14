@@ -184,6 +184,80 @@
             color: var(--text-sub);
         }
 
+        /* Stats Breakdown */
+        .stats-breakdown {
+            background-color: var(--bg);
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin-bottom: 16px;
+        }
+
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 0;
+            font-size: 12px;
+        }
+
+        .breakdown-item:not(:last-child) {
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+            margin-bottom: 4px;
+        }
+
+        .breakdown-label {
+            color: var(--text-sub);
+        }
+
+        .breakdown-count {
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        /* Quick Filters */
+        .quick-filters {
+            background-color: var(--bg);
+            border-radius: 8px;
+            padding: 12px 14px;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 10px;
+        }
+
+        .filter-row {
+            margin-bottom: 8px;
+        }
+
+        .filter-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .filter-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            color: var(--text-main);
+        }
+
+        .filter-label input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--accent);
+            cursor: pointer;
+        }
+
+        .filter-text {
+            flex: 1;
+        }
+
         /* Settings Link */
         .settings-btn {
             display: flex;
@@ -268,6 +342,33 @@
             <div class="stats-info">
                 <div class="stats-count" id="hiddenCount">0</div>
                 <div class="stats-label">Produkte ausgeblendet</div>
+            </div>
+        </div>
+
+        <div class="stats-breakdown">
+            <div class="breakdown-item">
+                <span class="breakdown-label">📢 Sponsored:</span>
+                <span class="breakdown-count" id="sponsoredCount">0</span>
+            </div>
+            <div class="breakdown-item">
+                <span class="breakdown-label">📦 Nicht-FBA:</span>
+                <span class="breakdown-count" id="fbmCount">0</span>
+            </div>
+        </div>
+
+        <div class="quick-filters">
+            <div class="section-title">⚡ Schnellfilter</div>
+            <div class="filter-row">
+                <label class="filter-label" for="toggleSponsored">
+                    <input type="checkbox" id="toggleSponsored" checked>
+                    <span class="filter-text">Sponsored ausblenden</span>
+                </label>
+            </div>
+            <div class="filter-row">
+                <label class="filter-label" for="toggleFBM">
+                    <input type="checkbox" id="toggleFBM" checked>
+                    <span class="filter-text">Nicht-FBA ausblenden</span>
+                </label>
             </div>
         </div>
 
