@@ -41,7 +41,7 @@
 
 ### Phase 4: Testing & Qualitätssicherung
 - [x] 4.1 Manifest.json Validierung durchführen
-- [ ] 4.2 Code mit Prettier formatieren
+- [x] 4.2 Code mit Prettier formatieren
 - [ ] 4.3 Keine eval() oder unsicherer Code vorhanden prüfen
 - [ ] 4.4 CSP-Konformität sicherstellen (keine inline scripts)
 
@@ -60,7 +60,7 @@
 | Phase 1 | ✅ Fertig | 11/11 |
 | Phase 2 | ✅ Fertig | 6/6 |
 | Phase 3 | ✅ Fertig | 6/6 |
-| Phase 4 | 🟡 In Arbeit | 1/4 |
+| Phase 4 | 🟡 In Arbeit | 2/4 |
 | Phase 5 | 🔴 Ausstehend | 0/4 |
 
-**Gesamt: 24/31 Tasks abgeschlossen (77%)**
+**Gesamt: 25/31 Tasks abgeschlossen (81%)**
