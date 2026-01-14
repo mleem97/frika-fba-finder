@@ -7,6 +7,7 @@
 ## ✅ Abgeschlossene Tasks
 
 ### Phase 1: Das Fundament (Core MVP)
+
 - [x] 1.1 Projekt-Ordner aufsetzen
 - [x] 1.2 manifest.json erstellen mit Manifest V3
 - [x] 1.3 content.js mit Filterlogik erstellen
@@ -20,6 +21,7 @@
 - [x] 1.11 Icons in manifest.json referenzieren
 
 ### Phase 2: Das Gehirn (Settings Logic)
+
 - [x] 2.1 chrome.storage.sync zum Speichern der Einstellungen implementieren
 - [x] 2.2 Einstellungen beim Laden der options.html abrufen
 - [x] 2.3 content.js Einstellungen aus Storage laden
@@ -32,6 +34,7 @@
 ## 🔄 Ausstehende Tasks
 
 ### Phase 3: UX & Feinschliff
+
 - [x] 3.1 popup.html erstellen (kompaktes Popup für Icon-Klick)
 - [x] 3.2 Statistik-Counter implementieren (ausgeblendete Produkte zählen)
 - [x] 3.3 Badge-Text am Icon anzeigen (chrome.action.setBadgeText)
@@ -40,12 +43,14 @@
 - [x] 3.6 Visual Feedback für aktiven Filter-Status
 
 ### Phase 4: Testing & Qualitätssicherung
+
 - [x] 4.1 Manifest.json Validierung durchführen
 - [x] 4.2 Code mit Prettier formatieren
-- [ ] 4.3 Keine eval() oder unsicherer Code vorhanden prüfen
+- [x] 4.3 Keine eval() oder unsicherer Code vorhanden prüfen
 - [ ] 4.4 CSP-Konformität sicherstellen (keine inline scripts)
 
 ### Phase 5: Launch-Vorbereitung
+
 - [ ] 5.1 README.md mit Installationsanleitung erstellen
 - [ ] 5.2 CHANGELOG.md erstellen
 - [ ] 5.3 Privacy Policy Seite vorbereiten
@@ -60,7 +65,7 @@
 | Phase 1 | ✅ Fertig | 11/11 |
 | Phase 2 | ✅ Fertig | 6/6 |
 | Phase 3 | ✅ Fertig | 6/6 |
-| Phase 4 | 🟡 In Arbeit | 2/4 |
+| Phase 4 | 🟡 In Arbeit | 3/4 |
 | Phase 5 | 🔴 Ausstehend | 0/4 |
 
-**Gesamt: 25/31 Tasks abgeschlossen (81%)**
+**Gesamt: 26/31 Tasks abgeschlossen (84%)**

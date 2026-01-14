@@ -101,14 +101,30 @@ function createIndicator() {
     indicatorElement.className = 'fba-finder-indicator fba-finder-hidden';
     indicatorElement.setAttribute('role', 'status');
     indicatorElement.setAttribute('aria-live', 'polite');
-    indicatorElement.innerHTML = `
-      <span class="fba-finder-indicator-icon">✓</span>
-      <span class="fba-finder-indicator-text">FBA Finder: 0 gefiltert</span>
-      <span class="fba-finder-indicator-close" title="Ausblenden">×</span>
-    `;
+
+    // Create indicator icon
+    const iconSpan = document.createElement('span');
+    iconSpan.className = 'fba-finder-indicator-icon';
+    iconSpan.textContent = '✓';
+
+    // Create indicator text
+    const textSpan = document.createElement('span');
+    textSpan.className = 'fba-finder-indicator-text';
+    textSpan.textContent = 'FBA Finder: 0 gefiltert';
+
+    // Create close button
+    const closeSpan = document.createElement('span');
+    closeSpan.className = 'fba-finder-indicator-close';
+    closeSpan.setAttribute('title', 'Ausblenden');
+    closeSpan.textContent = '×';
+
+    // Append all elements
+    indicatorElement.appendChild(iconSpan);
+    indicatorElement.appendChild(textSpan);
+    indicatorElement.appendChild(closeSpan);
 
     // Click on close button to dismiss
-    indicatorElement.querySelector('.fba-finder-indicator-close').addEventListener('click', (e) => {
+    closeSpan.addEventListener('click', (e) => {
       e.stopPropagation();
       dismissIndicator();
     });
