@@ -6,6 +6,9 @@
 ![Manifest](https://img.shields.io/badge/manifest-v3-green.svg)
 ![License](https://img.shields.io/badge/license-MIT-brightgreen.svg)
 
+<img width="440" height="280" alt="chromeestorew2" src="https://github.com/user-attachments/assets/e98e7ff0-5a3e-4129-a43c-e94a45895917" />
+
+
 ---
 
 ## ✨ Features
