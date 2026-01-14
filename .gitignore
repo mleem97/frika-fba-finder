@@ -1,4 +1,25 @@
-.github
-icons/*.svg
+# Development files
 /ralph
-generate_icons.html
+generate-icons.html
+
+# Build artifacts
+build/
+*.zip
+
+# SVG icons (only PNG needed for Chrome)
+icons/*.svg
+
+# IDE
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Node modules (if added later)
+node_modules/
+
+# Prettier (optional)
+.prettierrc
+.prettierignore
