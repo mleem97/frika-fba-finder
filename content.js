@@ -1,5 +1,183 @@
 // content.js - FBA Finder Content Script
 
+// Visual Feedback Indicator
+let indicatorElement = null;
+let indicatorDismissed = false;
+
+// CSS Styles for floating indicator and animations
+const INDICATOR_STYLES = `
+.fba-finder-indicator {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #232F3E;
+  color: #FFFFFF;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  z-index: 99999;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  user-select: none;
+}
+
+.fba-finder-indicator:hover {
+  background: #374151;
+  transform: translateY(-2px);
+}
+
+.fba-finder-indicator.fba-finder-hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px);
+}
+
+.fba-finder-indicator-icon {
+  width: 16px;
+  height: 16px;
+  background: #FF9900;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: bold;
+  color: #232F3E;
+}
+
+.fba-finder-indicator-close {
+  margin-left: 6px;
+  opacity: 0.7;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.fba-finder-indicator-close:hover {
+  opacity: 1;
+}
+
+/* Animation for products being filtered */
+.fba-finder-fade-out {
+  animation: fbaFinderFadeOut 0.4s ease forwards;
+}
+
+@keyframes fbaFinderFadeOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+.fba-finder-dim-transition {
+  transition: opacity 0.4s ease, filter 0.4s ease;
+}
+`;
+
+// Inject styles into the page
+function injectIndicatorStyles() {
+  if (document.getElementById('fba-finder-styles')) return;
+  
+  const styleTag = document.createElement('style');
+  styleTag.id = 'fba-finder-styles';
+  styleTag.textContent = INDICATOR_STYLES;
+  document.head.appendChild(styleTag);
+}
+
+// Create or update the floating indicator
+function createIndicator() {
+  if (indicatorDismissed) return;
+  
+  if (!indicatorElement) {
+    indicatorElement = document.createElement('div');
+    indicatorElement.className = 'fba-finder-indicator fba-finder-hidden';
+    indicatorElement.setAttribute('role', 'status');
+    indicatorElement.setAttribute('aria-live', 'polite');
+    indicatorElement.innerHTML = `
+      <span class="fba-finder-indicator-icon">✓</span>
+      <span class="fba-finder-indicator-text">FBA Finder: 0 gefiltert</span>
+      <span class="fba-finder-indicator-close" title="Ausblenden">×</span>
+    `;
+    
+    // Click on close button to dismiss
+    indicatorElement.querySelector('.fba-finder-indicator-close').addEventListener('click', (e) => {
+      e.stopPropagation();
+      dismissIndicator();
+    });
+    
+    // Click on indicator itself to temporarily minimize
+    indicatorElement.addEventListener('click', () => {
+      indicatorElement.classList.add('fba-finder-hidden');
+      // Show again after 5 seconds
+      setTimeout(() => {
+        if (!indicatorDismissed && countHiddenProducts() > 0) {
+          indicatorElement.classList.remove('fba-finder-hidden');
+        }
+      }, 5000);
+    });
+    
+    document.body.appendChild(indicatorElement);
+  }
+}
+
+// Update indicator with current count
+function updateIndicator(count) {
+  if (!indicatorElement || indicatorDismissed) return;
+  
+  const textElement = indicatorElement.querySelector('.fba-finder-indicator-text');
+  if (textElement) {
+    textElement.textContent = `FBA Finder: ${count} gefiltert`;
+  }
+  
+  // Only show if products have been filtered
+  if (count > 0 && settings.enabled) {
+    indicatorElement.classList.remove('fba-finder-hidden');
+  } else {
+    indicatorElement.classList.add('fba-finder-hidden');
+  }
+}
+
+// Dismiss indicator and save preference
+function dismissIndicator() {
+  indicatorDismissed = true;
+  if (indicatorElement) {
+    indicatorElement.classList.add('fba-finder-hidden');
+  }
+  // Save preference in local storage
+  if (chrome.storage && chrome.storage.local) {
+    chrome.storage.local.set({ indicatorDismissed: true });
+  }
+}
+
+// Load indicator dismiss preference
+function loadIndicatorPreference() {
+  return new Promise((resolve) => {
+    if (chrome.storage && chrome.storage.local) {
+      chrome.storage.local.get(['indicatorDismissed'], (result) => {
+        indicatorDismissed = result.indicatorDismissed === true;
+        resolve();
+      });
+    } else {
+      resolve();
+    }
+  });
+}
+
+// Remove indicator from DOM
+function removeIndicator() {
+  if (indicatorElement) {
+    indicatorElement.classList.add('fba-finder-hidden');
+  }
+}
+
 // 1. Begriffe für "Gesponsert/Werbung" in verschiedenen Sprachen
 const SPONSORED_TERMS = [
     "gesponsert",           // DE
@@ -73,13 +251,20 @@ function hideProduct(product, reason) {
     
     switch (settings.viewMode) {
         case 'remove':
-            product.style.display = 'none';
+            // Add fade-out animation before hiding
+            product.classList.add('fba-finder-fade-out');
+            // Hide after animation completes
+            setTimeout(() => {
+                product.style.display = 'none';
+            }, 400);
             break;
         case 'dim':
+            // Add smooth transition class for dim mode
+            product.classList.add('fba-finder-dim-transition');
             product.style.opacity = '0.3';
-            product.style.transition = 'opacity 0.3s';
             break;
         case 'red-border':
+            product.classList.add('fba-finder-dim-transition');
             product.style.border = '3px solid #dc2626';
             product.style.borderRadius = '8px';
             product.style.opacity = '0.7';
@@ -162,8 +347,11 @@ function showAllProducts() {
         product.style.opacity = '';
         product.style.border = '';
         product.style.borderRadius = '';
+        product.classList.remove('fba-finder-fade-out', 'fba-finder-dim-transition');
         product.dataset.fbaFinderProcessed = 'false';
     });
+    // Hide indicator when extension is disabled
+    removeIndicator();
 }
 
 // Produkte neu filtern (z.B. nach Einstellungsänderung)
@@ -174,6 +362,7 @@ function refilterProducts() {
         product.style.opacity = '';
         product.style.border = '';
         product.style.borderRadius = '';
+        product.classList.remove('fba-finder-fade-out', 'fba-finder-dim-transition');
         product.dataset.fbaFinderProcessed = 'false';
     });
     filterAmazonProducts();
@@ -246,6 +435,9 @@ function updateHiddenCount() {
     if (chrome.runtime && chrome.runtime.sendMessage) {
         chrome.runtime.sendMessage({ type: 'updateBadge', count: count });
     }
+    
+    // Update the floating indicator
+    updateIndicator(count);
 }
 
 // MutationObserver für Lazy-Loading
@@ -292,9 +484,19 @@ if (chrome.storage && chrome.storage.onChanged) {
             }
             
             if (settings.enabled) {
+                createIndicator();
                 refilterProducts();
             } else {
                 showAllProducts();
+            }
+        }
+        
+        // Listen for indicator dismiss reset (from local storage)
+        if (namespace === 'local' && changes.indicatorDismissed !== undefined) {
+            indicatorDismissed = changes.indicatorDismissed.newValue === true;
+            if (!indicatorDismissed && settings.enabled) {
+                createIndicator();
+                updateIndicator(countHiddenProducts());
             }
         }
     });
@@ -303,8 +505,14 @@ if (chrome.storage && chrome.storage.onChanged) {
 // Initialisierung
 async function init() {
     await loadSettings();
+    await loadIndicatorPreference();
+    
+    // Inject styles for indicator and animations
+    injectIndicatorStyles();
     
     if (settings.enabled) {
+        // Create the indicator element
+        createIndicator();
         filterAmazonProducts();
         startObserver();
     }

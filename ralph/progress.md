@@ -1,6 +1,6 @@
 # FBA Finder - Fortschritt
 
-## Aktueller Status: Phase 2 abgeschlossen, Phase 3 beginnt
+## Aktueller Status: Phase 3 abgeschlossen, Phase 4 beginnt
 
 ---
 
@@ -37,7 +37,7 @@
 - [x] 3.3 Badge-Text am Icon anzeigen (chrome.action.setBadgeText)
 - [x] 3.4 Background Service Worker erstellen für Badge-Kommunikation
 - [x] 3.5 Popup mit Schnell-Toggle und Stats anzeigen
-- [ ] 3.6 Visual Feedback für aktiven Filter-Status
+- [x] 3.6 Visual Feedback für aktiven Filter-Status
 
 ### Phase 4: Testing & Qualitätssicherung
 - [ ] 4.1 Manifest.json Validierung durchführen
@@ -59,8 +59,8 @@
 |-------|--------|---------------|
 | Phase 1 | ✅ Fertig | 11/11 |
 | Phase 2 | ✅ Fertig | 6/6 |
-| Phase 3 | 🟡 In Arbeit | 5/6 |
+| Phase 3 | ✅ Fertig | 6/6 |
 | Phase 4 | 🔴 Ausstehend | 0/4 |
 | Phase 5 | 🔴 Ausstehend | 0/4 |
 
-**Gesamt: 22/31 Tasks abgeschlossen (71%)**
+**Gesamt: 23/31 Tasks abgeschlossen (74%)**
