@@ -1,305 +1,64 @@
 <!doctype html>
 <html lang="de">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FBA Finder Einstellungen</title>
-    <style>
-      :root {
-        --primary: #232f3e; /* Amazon Dark Blue */
-        --accent: #ff9900; /* Amazon Orange */
-        --bg: #f3f4f6;
-        --card-bg: #ffffff;
-        --text-main: #111827;
-        --text-sub: #6b7280;
-        --border: #e5e7eb;
-      }
-
-      body {
-        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        background-color: var(--bg);
-        color: var(--text-main);
-        margin: 0;
-        display: flex;
-        justify-content: center;
-        padding: 40px 20px;
-      }
-
-      .container {
-        width: 100%;
-        max-width: 500px;
-        background: var(--card-bg);
-        border-radius: 12px;
-        box-shadow:
-          0 4px 6px -1px rgba(0, 0, 0, 0.1),
-          0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        overflow: hidden;
-      }
-
-      /* Header Area */
-      .header {
-        background-color: var(--primary);
-        color: white;
-        padding: 24px 32px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-
-      .header h1 {
-        margin: 0;
-        font-size: 20px;
-        font-weight: 600;
-        letter-spacing: 0.5px;
-      }
-
-      .badge {
-        background-color: var(--accent);
-        color: var(--primary);
-        font-size: 11px;
-        font-weight: bold;
-        padding: 4px 8px;
-        border-radius: 4px;
-        text-transform: uppercase;
-      }
-
-      /* Content Area */
-      .content {
-        padding: 32px;
-      }
-
-      .section-title {
-        font-size: 12px;
-        text-transform: uppercase;
-        color: var(--text-sub);
-        font-weight: 700;
-        margin-bottom: 16px;
-        letter-spacing: 1px;
-      }
-
-      /* Settings Rows */
-      .setting-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 24px;
-        padding-bottom: 24px;
-        border-bottom: 1px solid var(--border);
-      }
-
-      .setting-row:last-child {
-        border-bottom: none;
-        margin-bottom: 0;
-        padding-bottom: 0;
-      }
-
-      .setting-info h3 {
-        margin: 0 0 4px 0;
-        font-size: 16px;
-        font-weight: 500;
-      }
-
-      .setting-info p {
-        margin: 0;
-        font-size: 13px;
-        color: var(--text-sub);
-        line-height: 1.4;
-      }
-
-      /* Custom Toggle Switch */
-      .switch {
-        position: relative;
-        display: inline-block;
-        width: 50px;
-        height: 28px;
-        flex-shrink: 0;
-      }
-
-      .switch input {
-        opacity: 0;
-        width: 0;
-        height: 0;
-      }
-
-      .slider {
-        position: absolute;
-        cursor: pointer;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: #e5e7eb;
-        transition: 0.3s;
-        border-radius: 34px;
-      }
-
-      .slider:before {
-        position: absolute;
-        content: '';
-        height: 20px;
-        width: 20px;
-        left: 4px;
-        bottom: 4px;
-        background-color: white;
-        transition: 0.3s;
-        border-radius: 50%;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      }
-
-      input:checked + .slider {
-        background-color: var(--accent);
-      }
-
-      input:checked + .slider:before {
-        transform: translateX(22px);
-      }
-
-      /* Select Dropdown styling */
-      select {
-        padding: 8px 12px;
-        border-radius: 6px;
-        border: 1px solid var(--border);
-        color: var(--text-main);
-        background-color: white;
-        font-size: 14px;
-        outline: none;
-        cursor: pointer;
-      }
-
-      select:focus {
-        border-color: var(--accent);
-      }
-
-      /* Footer */
-      .footer {
-        background-color: #f9fafb;
-        padding: 16px 32px;
-        text-align: center;
-        border-top: 1px solid var(--border);
-        font-size: 12px;
-        color: var(--text-sub);
-      }
-
-      .footer a {
-        color: var(--primary);
-        text-decoration: none;
-        font-weight: 500;
-      }
-
-      .footer a:hover {
-        text-decoration: underline;
-      }
-
-      /* Save Button Area */
-      .actions {
-        margin-top: 24px;
-        text-align: right;
-      }
-
-      .btn-save {
-        background-color: var(--primary);
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 6px;
-        font-size: 14px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background 0.2s;
-      }
-
-      .btn-save:hover {
-        background-color: #1a232f;
-      }
-    </style>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FBA Finder – Einstellungen</title>
+    <link rel="stylesheet" href="ui.css" />
   </head>
   <body>
-    <div class="container">
-      <div class="header">
-        <div style="display: flex; align-items: center; gap: 10px">
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            style="background: rgba(255, 255, 255, 0.2); padding: 6px; border-radius: 6px"
-          >
-            <path
-              d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"
-            ></path>
-            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-            <line x1="12" y1="22.08" x2="12" y2="12"></line>
-          </svg>
-          <h1>FBA Finder</h1>
+    <main class="shell shell--options">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand__mark" aria-hidden="true">F</div>
+          <div><h1 class="brand__title">FBA Finder</h1><p class="brand__meta">Smart Shopping Filter</p></div>
         </div>
-        <span class="badge">PRO</span>
-      </div>
+        <span class="version" data-version>v2.0.0</span>
+      </header>
 
       <div class="content">
-        <div class="section-title">Hauptfilter</div>
-
-        <div class="setting-row">
-          <div class="setting-info">
-            <h3>Nicht-FBA ausblenden</h3>
-            <p>Zeigt nur Produkte an, die von Amazon versandt werden.</p>
+        <section class="card" aria-labelledby="general-heading">
+          <h2 id="general-heading">Allgemein</h2>
+          <p class="description">Globale Regeln für alle unterstützten Shops.</p>
+          <div class="setting-list">
+            <label class="setting"><span><span class="setting__title">Filter aktiv</span><span class="setting__hint">Alle Eingriffe global pausieren</span></span><span class="switch"><input type="checkbox" id="enabled" /><span class="switch__track"></span></span></label>
+            <label class="setting" for="viewMode"><span><span class="setting__title">Gefilterte Angebote</span><span class="setting__hint">Ausblenden, abdunkeln oder markieren</span></span><select id="viewMode"><option value="remove">Komplett ausblenden</option><option value="dim">Abdunkeln</option><option value="mark">Rot markieren</option></select></label>
+            <label class="setting" for="similarityThreshold"><span><span class="setting__title">Duplikat-Erkennung</span><span class="setting__hint">Je strenger, desto weniger Fehlgruppierungen</span></span><select id="similarityThreshold"><option value="0.95">Sehr streng</option><option value="0.9">Ausgewogen</option><option value="0.84">Großzügig</option></select></label>
+            <label class="setting"><span><span class="setting__title">Nur mit bekannten Versandkosten bündeln</span><span class="setting__hint">Verhindert falsche „günstigste“-Entscheidungen</span></span><span class="switch"><input type="checkbox" id="requireShippingKnown" /><span class="switch__track"></span></span></label>
+            <label class="setting"><span><span class="setting__title">Hinweis im Shop anzeigen</span><span class="setting__hint">Kompakter Zähler unten rechts</span></span><span class="switch"><input type="checkbox" id="showIndicator" /><span class="switch__track"></span></span></label>
           </div>
-          <label class="switch">
-            <input type="checkbox" id="toggleFba" checked />
-            <span class="slider"></span>
-          </label>
-        </div>
+        </section>
 
-        <div class="setting-row">
-          <div class="setting-info">
-            <h3>Gesponserte Produkte ausblenden</h3>
-            <p>Entfernt Anzeigen und "Sponsored" Listings.</p>
+        <section class="card" aria-labelledby="shops-heading">
+          <h2 id="shops-heading">Shops</h2>
+          <p class="description">Jeder Shop kann separat aktiviert und konfiguriert werden.</p>
+          <div class="platform-list">
+            <article class="platform" data-platform="amazon"><div class="platform__head"><div><strong>Amazon</strong><small>FBA-/FBM- und Prime-Erkennung</small></div><label class="switch" aria-label="Amazon aktivieren"><input type="checkbox" data-option="enabled" /><span class="switch__track"></span></label></div><div class="platform__options"><label><input type="checkbox" data-option="hideSponsored" /> Sponsored</label><label><input type="checkbox" data-option="hideRecommended" /> Empfehlungen</label><label><input type="checkbox" data-option="deduplicate" /> Duplikate</label><label><input type="checkbox" data-option="sortByPrice" /> Nach Gesamtpreis</label></div></article>
+            <article class="platform" data-platform="aliexpress"><div class="platform__head"><div><strong>AliExpress</strong><small>Marktplatz, Preis + Versand</small></div><label class="switch" aria-label="AliExpress aktivieren"><input type="checkbox" data-option="enabled" /><span class="switch__track"></span></label></div><div class="platform__options"><label><input type="checkbox" data-option="hideSponsored" /> Sponsored</label><label><input type="checkbox" data-option="hideRecommended" /> Empfehlungen</label><label><input type="checkbox" data-option="deduplicate" /> Duplikate</label><label><input type="checkbox" data-option="sortByPrice" /> Nach Gesamtpreis</label></div></article>
+            <article class="platform" data-platform="alibaba"><div class="platform__head"><div><strong>Alibaba</strong><small>Großhandel, MOQ + Versand</small></div><label class="switch" aria-label="Alibaba aktivieren"><input type="checkbox" data-option="enabled" /><span class="switch__track"></span></label></div><div class="platform__options"><label><input type="checkbox" data-option="hideSponsored" /> Sponsored</label><label><input type="checkbox" data-option="hideRecommended" /> Empfehlungen</label><label><input type="checkbox" data-option="deduplicate" /> Duplikate</label><label><input type="checkbox" data-option="sortByPrice" /> Nach Gesamtpreis</label></div></article>
+            <article class="platform" data-platform="temu"><div class="platform__head"><div><strong>Temu</strong><small>Marktplatz, Preis + Versand</small></div><label class="switch" aria-label="Temu aktivieren"><input type="checkbox" data-option="enabled" /><span class="switch__track"></span></label></div><div class="platform__options"><label><input type="checkbox" data-option="hideSponsored" /> Sponsored</label><label><input type="checkbox" data-option="hideRecommended" /> Empfehlungen</label><label><input type="checkbox" data-option="deduplicate" /> Duplikate</label><label><input type="checkbox" data-option="sortByPrice" /> Nach Gesamtpreis</label></div></article>
+            <article class="platform" data-platform="shein"><div class="platform__head"><div><strong>SHEIN</strong><small>Mode, Preis + Versand</small></div><label class="switch" aria-label="SHEIN aktivieren"><input type="checkbox" data-option="enabled" /><span class="switch__track"></span></label></div><div class="platform__options"><label><input type="checkbox" data-option="hideSponsored" /> Sponsored</label><label><input type="checkbox" data-option="hideRecommended" /> Empfehlungen</label><label><input type="checkbox" data-option="deduplicate" /> Duplikate</label><label><input type="checkbox" data-option="sortByPrice" /> Nach Gesamtpreis</label></div></article>
+            <article class="platform" data-platform="dhgate"><div class="platform__head"><div><strong>DHgate</strong><small>Marktplatz, Preis + Versand</small></div><label class="switch" aria-label="DHgate aktivieren"><input type="checkbox" data-option="enabled" /><span class="switch__track"></span></label></div><div class="platform__options"><label><input type="checkbox" data-option="hideSponsored" /> Sponsored</label><label><input type="checkbox" data-option="hideRecommended" /> Empfehlungen</label><label><input type="checkbox" data-option="deduplicate" /> Duplikate</label><label><input type="checkbox" data-option="sortByPrice" /> Nach Gesamtpreis</label></div></article>
+            <article class="platform" data-platform="banggood"><div class="platform__head"><div><strong>Banggood</strong><small>Technik, Preis + Versand</small></div><label class="switch" aria-label="Banggood aktivieren"><input type="checkbox" data-option="enabled" /><span class="switch__track"></span></label></div><div class="platform__options"><label><input type="checkbox" data-option="hideSponsored" /> Sponsored</label><label><input type="checkbox" data-option="hideRecommended" /> Empfehlungen</label><label><input type="checkbox" data-option="deduplicate" /> Duplikate</label><label><input type="checkbox" data-option="sortByPrice" /> Nach Gesamtpreis</label></div></article>
+            <article class="platform" data-platform="ebay"><div class="platform__head"><div><strong>eBay</strong><small>Marktplatz, Preis + Versand</small></div><label class="switch" aria-label="eBay aktivieren"><input type="checkbox" data-option="enabled" /><span class="switch__track"></span></label></div><div class="platform__options"><label><input type="checkbox" data-option="hideSponsored" /> Sponsored</label><label><input type="checkbox" data-option="hideRecommended" /> Empfehlungen</label><label><input type="checkbox" data-option="deduplicate" /> Duplikate</label><label><input type="checkbox" data-option="sortByPrice" /> Nach Gesamtpreis</label></div></article>
           </div>
-          <label class="switch">
-            <input type="checkbox" id="toggleAds" checked />
-            <span class="slider"></span>
-          </label>
-        </div>
+        </section>
 
-        <div style="height: 10px"></div>
-
-        <div class="section-title">Darstellung & Erweitert</div>
-
-        <div class="setting-row">
-          <div class="setting-info">
-            <h3>Filter-Modus</h3>
-            <p>Wie sollen gefilterte Produkte behandelt werden?</p>
+        <section class="card" aria-labelledby="amazon-heading">
+          <h2 id="amazon-heading">Amazon-spezifisch</h2>
+          <p class="description">Prime wird bewusst nicht mehr als Beweis für FBA behandelt.</p>
+          <div class="setting-list">
+            <label class="setting"><span><span class="setting__title">Verkäuferversand ausblenden</span><span class="setting__hint">Nur bestätigten Amazon-Versand anzeigen</span></span><span class="switch"><input type="checkbox" id="hideFBM" /><span class="switch__track"></span></span></label>
+            <label class="setting"><span><span class="setting__title">Unklare Versandart ausblenden</span><span class="setting__hint">Kann Treffer ohne sichtbare Versanddetails verbergen</span></span><span class="switch"><input type="checkbox" id="hideUnknown" /><span class="switch__track"></span></span></label>
+            <label class="setting"><span><span class="setting__title">Zusätzlich Prime verlangen</span><span class="setting__hint">Separater Prime-Filter</span></span><span class="switch"><input type="checkbox" id="strictPrime" /><span class="switch__track"></span></span></label>
           </div>
-          <select id="viewMode">
-            <option value="remove">Komplett entfernen</option>
-            <option value="dim">Ausgrauen (Transparenz 50%)</option>
-            <option value="red-border">Rot markieren</option>
-          </select>
-        </div>
-        <div class="setting-row">
-          <div class="setting-info">
-            <h3>Strikter Prime Check</h3>
-            <p>Filtert auch FBA-Angebote ohne Prime-Status.</p>
-          </div>
-          <label class="switch">
-            <input type="checkbox" id="togglePrime" />
-            <span class="slider"></span>
-          </label>
-        </div>
+        </section>
 
-        <div class="actions">
-          <button class="btn-save" id="saveBtn">Einstellungen speichern</button>
-        </div>
+        <div class="notice"><strong>Gesamtpreis:</strong> Duplikate werden nur gruppiert, wenn Titel bzw. Modell eindeutig übereinstimmen. Standardmäßig muss außerdem der Versandpreis bekannt sein; dann bleibt das günstigste Angebot aus Artikelpreis plus Versand sichtbar.</div>
+        <div class="actions"><button class="button button--secondary" id="resetIndicator" type="button">Hinweis zurücksetzen</button><button class="button" id="save" type="button">Einstellungen speichern</button></div>
       </div>
-
-      <div class="footer">
-        FBA Finder v1.0.2 • <a href="#">Support kontaktieren</a> • <a href="#">Bewerten</a>
-      </div>
-    </div>
-
+      <footer class="footer">Keine Analyse-, Such- oder Nutzungsdaten verlassen deinen Browser.</footer>
+    </main>
     <script src="options.js"></script>
   </body>
 </html>

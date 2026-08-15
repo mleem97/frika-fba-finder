@@ -1,176 +1,101 @@
-// DOM Elemente
-const toggleEnabled = document.getElementById('toggleEnabled');
-const toggleSponsored = document.getElementById('toggleSponsored');
-const toggleFBM = document.getElementById('toggleFBM');
-const statusDot = document.getElementById('statusDot');
-const hiddenCount = document.getElementById('hiddenCount');
-const sponsoredCount = document.getElementById('sponsoredCount');
-const fbmCount = document.getElementById('fbmCount');
-const openSettingsBtn = document.getElementById('openSettings');
+(function popupController() {
+  'use strict';
 
-/**
- * Update the status dot based on enabled state
- * @param {boolean} enabled - Whether the extension is enabled
- */
-function updateStatusDot(enabled) {
-  if (enabled) {
-    statusDot.classList.remove('disabled');
-  } else {
-    statusDot.classList.add('disabled');
-  }
-}
-
-/**
- * Load settings from chrome.storage.sync and counter from local
- */
-function loadSettings() {
-  if (chrome.storage && chrome.storage.sync) {
-    chrome.storage.sync.get(['enabled', 'hideSponsored', 'hideFBM'], (result) => {
-      // Default to enabled if not set
-      const isEnabled = result.enabled !== undefined ? result.enabled : true;
-      const hideSponsored = result.hideSponsored !== undefined ? result.hideSponsored : true;
-      const hideFBM = result.hideFBM !== undefined ? result.hideFBM : true;
-
-      toggleEnabled.checked = isEnabled;
-      toggleSponsored.checked = hideSponsored;
-      toggleFBM.checked = hideFBM;
-      updateStatusDot(isEnabled);
-    });
-  }
-
-  // Load hidden count and detailed stats from local storage
-  loadDetailedStats();
-}
-
-/**
- * Load detailed stats from chrome.storage.local and request fresh stats from content script
- */
-function loadDetailedStats() {
-  // First, try to get from storage
-  if (chrome.storage && chrome.storage.local) {
-    chrome.storage.local.get(['hiddenCount', 'detailedStats'], (result) => {
-      const count = result.hiddenCount || 0;
-      hiddenCount.textContent = count.toString();
-
-      if (result.detailedStats) {
-        updateStatsDisplay(result.detailedStats);
-      }
-    });
-  }
-
-  // Then, request fresh detailed stats from content script in active tab
-  if (chrome.tabs) {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      if (tabs[0] && tabs[0].id) {
-        chrome.tabs.sendMessage(tabs[0].id, { action: 'getDetailedStats' }, (response) => {
-          // Check for errors (e.g., content script not loaded on non-Amazon pages)
-          if (chrome.runtime.lastError) {
-            // Silently ignore - content script might not be active on this page
-            return;
-          }
-          if (response) {
-            if (response.hiddenCount !== undefined) {
-              hiddenCount.textContent = response.hiddenCount.toString();
-            }
-            if (response.detailedStats) {
-              updateStatsDisplay(response.detailedStats);
-            }
-          }
-        });
-      }
-    });
-  }
-}
-
-/**
- * Update the stats display with detailed breakdown
- * @param {Object} stats - The detailed stats object
- */
-function updateStatsDisplay(stats) {
-  sponsoredCount.textContent = (stats.sponsored || 0).toString();
-  fbmCount.textContent = ((stats.fbm || 0) + (stats.noPrime || 0)).toString();
-}
-
-/**
- * Save a filter setting to chrome.storage.sync
- * @param {string} key - The setting key
- * @param {boolean} value - The setting value
- */
-function saveFilterSetting(key, value) {
-  if (chrome.storage && chrome.storage.sync) {
-    chrome.storage.sync.set({ [key]: value });
-  }
-}
-
-/**
- * Save enabled state to chrome.storage.sync
- * @param {boolean} enabled - Whether the extension is enabled
- */
-function saveEnabledState(enabled) {
-  if (chrome.storage && chrome.storage.sync) {
-    chrome.storage.sync.set({ enabled: enabled }, () => {
-      updateStatusDot(enabled);
-    });
-  }
-}
-
-/**
- * Open the full options page
- */
-function openOptionsPage() {
-  if (chrome.runtime && chrome.runtime.openOptionsPage) {
-    chrome.runtime.openOptionsPage();
-  } else {
-    // Fallback for older browsers
-    window.open(chrome.runtime.getURL('options.html'));
-  }
-}
-
-// Event Listeners
-document.addEventListener('DOMContentLoaded', () => {
-  loadSettings();
-});
-
-toggleEnabled.addEventListener('change', () => {
-  saveEnabledState(toggleEnabled.checked);
-});
-
-toggleSponsored.addEventListener('change', () => {
-  saveFilterSetting('hideSponsored', toggleSponsored.checked);
-});
-
-toggleFBM.addEventListener('change', () => {
-  saveFilterSetting('hideFBM', toggleFBM.checked);
-});
-
-openSettingsBtn.addEventListener('click', () => {
-  openOptionsPage();
-});
-
-// Listen for storage changes to update counter in real-time
-if (chrome.storage && chrome.storage.onChanged) {
-  chrome.storage.onChanged.addListener((changes, namespace) => {
-    // Listen for enabled state and filter changes in sync storage
-    if (namespace === 'sync') {
-      if (changes.enabled !== undefined) {
-        toggleEnabled.checked = changes.enabled.newValue;
-        updateStatusDot(changes.enabled.newValue);
-      }
-      if (changes.hideSponsored !== undefined) {
-        toggleSponsored.checked = changes.hideSponsored.newValue;
-      }
-      if (changes.hideFBM !== undefined) {
-        toggleFBM.checked = changes.hideFBM.newValue;
-      }
-    }
-    // Listen for hidden count and detailed stats changes in local storage
-    if (namespace === 'local') {
-      if (changes.hiddenCount !== undefined) {
-        hiddenCount.textContent = (changes.hiddenCount.newValue || 0).toString();
-      }
-      if (changes.detailedStats !== undefined) {
-        updateStatsDisplay(changes.detailedStats.newValue || {});
-      }
-    }
+  const extensionApi = globalThis.browser || globalThis.chrome;
+  const platformLabels = {
+    amazon: 'Amazon', aliexpress: 'AliExpress', alibaba: 'Alibaba', temu: 'Temu', shein: 'SHEIN',
+    dhgate: 'DHgate', banggood: 'Banggood', ebay: 'eBay',
+  };
+  const platformDefaults = (id) => ({
+    enabled: true,
+    hideSponsored: true,
+    hideRecommended: id !== 'amazon' && id !== 'aliexpress',
+    deduplicate: id !== 'amazon',
+    sortByPrice: false,
   });
-}
+  const statKeys = ['hidden', 'sponsored', 'duplicate', 'recommended', 'fbm', 'unknown'];
+  let currentPlatformId = null;
+  let savedSettings = { enabled: true, platformSettings: {} };
+
+  function getStorage(area, values) {
+    return new Promise((resolve) => extensionApi.storage[area].get(values, (result) => {
+      void extensionApi.runtime.lastError; resolve(result || values);
+    }));
+  }
+  function setStorage(area, values) {
+    return new Promise((resolve) => extensionApi.storage[area].set(values, () => {
+      void extensionApi.runtime.lastError; resolve();
+    }));
+  }
+  function activeTab() {
+    return new Promise((resolve) => extensionApi.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      void extensionApi.runtime.lastError; resolve(tabs?.[0] || null);
+    }));
+  }
+  function setStats(stats = {}) {
+    statKeys.forEach((key) => { document.getElementById(key).textContent = String(stats[key] || 0); });
+  }
+  function setPageStatus(active, platformId) {
+    const label = platformLabels[platformId] || 'Shop';
+    document.getElementById('pageStatus').textContent = active ? `${label}-Ergebnisse erkannt` : 'Auf dieser Seite nicht aktiv';
+    document.getElementById('pageStatusDot').classList.toggle('status-dot--active', active);
+    document.getElementById('platformLabel').textContent = active ? label : 'Kein unterstützter Shop';
+    ['platformEnabled', 'hideSponsored', 'hideRecommended', 'deduplicate'].forEach((id) => {
+      document.getElementById(id).disabled = !active;
+    });
+  }
+  function renderPlatformSettings() {
+    if (!currentPlatformId) return;
+    const defaults = platformDefaults(currentPlatformId);
+    const platform = { ...defaults, ...(savedSettings.platformSettings[currentPlatformId] || {}) };
+    Object.keys(defaults).filter((key) => key !== 'sortByPrice').forEach((key) => {
+      document.getElementById(key === 'enabled' ? 'platformEnabled' : key).checked = Boolean(platform[key]);
+    });
+  }
+  async function savePlatformSetting(key, value) {
+    const platformSettings = structuredClone(savedSettings.platformSettings || {});
+    platformSettings[currentPlatformId] = {
+      ...platformDefaults(currentPlatformId), ...(platformSettings[currentPlatformId] || {}), [key]: value,
+    };
+    savedSettings.platformSettings = platformSettings;
+    await setStorage('sync', { platformSettings });
+  }
+  async function requestLiveStats() {
+    const tab = await activeTab();
+    if (!tab?.id) return setPageStatus(false, null);
+    extensionApi.tabs.sendMessage(tab.id, { action: 'getStats' }, (response) => {
+      const failed = Boolean(extensionApi.runtime.lastError);
+      currentPlatformId = failed ? null : response?.platformId || null;
+      setPageStatus(!failed && response?.supportedPage === true, currentPlatformId);
+      if (!failed && response?.stats) setStats(response.stats);
+      renderPlatformSettings();
+    });
+  }
+  async function init() {
+    const [sync, local] = await Promise.all([
+      getStorage('sync', { enabled: true, platformSettings: {} }),
+      getStorage('local', { shopFilterStats: {} }),
+    ]);
+    savedSettings = sync;
+    document.getElementById('enabled').checked = sync.enabled !== false;
+    document.getElementById('enabled').addEventListener('change', (event) => setStorage('sync', { enabled: event.target.checked }));
+    const controlMap = {
+      platformEnabled: 'enabled', hideSponsored: 'hideSponsored',
+      hideRecommended: 'hideRecommended', deduplicate: 'deduplicate',
+    };
+    Object.entries(controlMap).forEach(([id, key]) => {
+      document.getElementById(id).addEventListener('change', (event) => savePlatformSetting(key, event.target.checked));
+    });
+    document.querySelectorAll('[data-version]').forEach((node) => {
+      node.textContent = `v${extensionApi.runtime.getManifest().version}`;
+    });
+    setStats(local.shopFilterStats);
+    requestLiveStats();
+  }
+
+  document.getElementById('openOptions').addEventListener('click', () => extensionApi.runtime.openOptionsPage());
+  extensionApi.storage.onChanged.addListener((changes, namespace) => {
+    if (namespace === 'local' && changes.shopFilterStats) setStats(changes.shopFilterStats.newValue);
+  });
+  init();
+})();

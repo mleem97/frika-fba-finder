@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "FBA Finder – Smart Shopping Filter",
+  "short_name": "FBA Finder",
+  "version": "2.0.1",
+  "description": "Entfernt Werbung und Empfehlungen, bündelt eindeutige Duplikate und repariert den Amazon-FBA-Filter.",
+  "permissions": ["storage"],
+  "icons": { "16": "icons/icon16.png", "48": "icons/icon48.png", "128": "icons/icon128.png" },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "FBA Finder",
+    "default_icon": { "16": "icons/icon16.png", "48": "icons/icon48.png", "128": "icons/icon128.png" }
+  },
+  "options_ui": { "page": "options.html", "open_in_tab": true },
+  "background": { "service_worker": "background.js" },
+  "content_scripts": [{
+    "matches": [
+      "*://*.amazon.ae/*", "*://*.amazon.ca/*", "*://*.amazon.cn/*", "*://*.amazon.co.jp/*", "*://*.amazon.co.uk/*", "*://*.amazon.com/*", "*://*.amazon.com.au/*", "*://*.amazon.com.be/*", "*://*.amazon.com.br/*", "*://*.amazon.com.mx/*", "*://*.amazon.com.tr/*", "*://*.amazon.de/*", "*://*.amazon.eg/*", "*://*.amazon.es/*", "*://*.amazon.fr/*", "*://*.amazon.in/*", "*://*.amazon.it/*", "*://*.amazon.nl/*", "*://*.amazon.pl/*", "*://*.amazon.sa/*", "*://*.amazon.se/*", "*://*.amazon.sg/*", "*://*.amazon.co.za/*",
+      "*://*.aliexpress.com/*", "*://*.aliexpress.de/*", "*://*.alibaba.com/*", "*://*.temu.com/*", "*://*.shein.com/*", "*://*.shein.de/*", "*://*.dhgate.com/*", "*://*.banggood.com/*", "*://*.banggood.in/*", "*://*.ebay.de/*", "*://*.ebay.com/*", "*://*.ebay.co.uk/*", "*://*.ebay.fr/*", "*://*.ebay.it/*", "*://*.ebay.es/*", "*://*.ebay.nl/*", "*://*.ebay.pl/*", "*://*.ebay.ca/*", "*://*.ebay.com.au/*"
+    ],
+    "js": ["detector.js", "content.js"],
+    "run_at": "document_idle"
+  }]
+}
