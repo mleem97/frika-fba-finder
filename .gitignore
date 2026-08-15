@@ -3,10 +3,14 @@
 generate-icons.html
 
 # Build artifacts
+artifacts/
 build/
+dist/
 *.zip
+*.xpi
+*.pem
 
-# SVG icons (only PNG needed for Chrome)
+# SVG icons (only PNG needed for browser packages)
 icons/*.svg
 
 # IDE
@@ -17,9 +21,9 @@ icons/*.svg
 .DS_Store
 Thumbs.db
 
-# Node modules (if added later)
+# Node modules
 node_modules/
 
-# Prettier (optional)
+# Prettier
 .prettierrc
 .prettierignore

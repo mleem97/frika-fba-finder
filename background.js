@@ -1,33 +1,52 @@
-// background.js - FBA Finder Service Worker (Manifest V3)
+(function backgroundScript() {
+  'use strict';
 
-// Amazon orange color for badge
-const BADGE_COLOR = '#FF9900';
+  const extensionApi = globalThis.browser || globalThis.chrome;
+  const BADGE_COLOR = '#ffb000';
+  const BADGE_TEXT_COLOR = '#17202b';
+  const PLATFORM_IDS = ['amazon', 'aliexpress', 'alibaba', 'temu', 'shein', 'dhgate', 'banggood', 'ebay'];
 
-// Set badge background color on install/startup
-chrome.runtime.onInstalled.addListener(() => {
-  chrome.action.setBadgeBackgroundColor({ color: BADGE_COLOR });
-});
-
-// Also set on startup (in case service worker was inactive)
-chrome.action.setBadgeBackgroundColor({ color: BADGE_COLOR });
-
-// Listen for messages from content scripts
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.type === 'updateBadge') {
-    const count = message.count;
-    const tabId = sender.tab?.id;
-
-    if (tabId) {
-      // If count is 0, hide badge by setting empty text
-      const badgeText = count > 0 ? count.toString() : '';
-
-      chrome.action.setBadgeText({
-        text: badgeText,
-        tabId: tabId,
-      });
+  function initializeBadge() {
+    extensionApi.action.setBadgeBackgroundColor({ color: BADGE_COLOR });
+    if (extensionApi.action.setBadgeTextColor) {
+      extensionApi.action.setBadgeTextColor({ color: BADGE_TEXT_COLOR });
     }
   }
 
-  // Return true to indicate we'll send a response asynchronously (if needed)
-  return true;
-});
+  function migrateSettings() {
+    extensionApi.storage.sync.get(null, (saved) => {
+      void extensionApi.runtime.lastError;
+      const update = {};
+      if (!saved.platformSettings) {
+        update.platformSettings = Object.fromEntries(PLATFORM_IDS.map((id) => [id, {
+          enabled: true,
+          hideSponsored: id === 'amazon' && saved.hideSponsored !== undefined ? saved.hideSponsored : true,
+          hideRecommended: id !== 'amazon',
+          deduplicate: id !== 'amazon',
+          sortByPrice: false,
+        }]));
+      }
+      if (saved.viewMode === 'red-border') update.viewMode = 'mark';
+      if (Object.keys(update).length > 0) extensionApi.storage.sync.set(update);
+    });
+  }
+
+  extensionApi.runtime.onInstalled.addListener((details) => {
+    initializeBadge();
+    migrateSettings();
+    if (details.reason === 'update' && details.previousVersion !== extensionApi.runtime.getManifest().version) {
+      extensionApi.tabs.create({ url: extensionApi.runtime.getURL('whats-new.html') });
+    }
+  });
+  extensionApi.runtime.onStartup?.addListener(initializeBadge);
+  initializeBadge();
+
+  extensionApi.runtime.onMessage.addListener((message, sender) => {
+    if (message?.type !== 'updateBadge' || !sender.tab?.id) return;
+    const count = Math.max(0, Number(message.count) || 0);
+    extensionApi.action.setBadgeText({
+      text: count > 99 ? '99+' : count > 0 ? String(count) : '',
+      tabId: sender.tab.id,
+    });
+  });
+})();

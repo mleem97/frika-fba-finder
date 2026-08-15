@@ -1,0 +1,15 @@
+{
+  "name": "fba-finder",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Cross-browser smart shopping filter for Amazon and major marketplaces.",
+  "scripts": {
+    "test": "node --test",
+    "validate": "node scripts/validate.mjs",
+    "build": "node scripts/build.mjs",
+    "package": "npm run build && node scripts/package.mjs",
+    "check": "npm test && npm run validate && npm run package"
+  },
+  "engines": { "node": ">=20" },
+  "license": "MIT"
+}
