@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "FBA Finder – Smart Shopping Filter",
   "short_name": "FBA Finder",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Entfernt Werbung und Empfehlungen, bündelt eindeutige Duplikate und repariert den Amazon-FBA-Filter.",
   "permissions": ["storage"],
   "icons": { "16": "icons/icon16.png", "48": "icons/icon48.png", "128": "icons/icon128.png" },

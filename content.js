@@ -8,7 +8,7 @@
     Object.keys(detector?.PLATFORMS || {}).map((id) => [id, {
       enabled: true,
       hideSponsored: true,
-      hideRecommended: id !== 'amazon',
+      hideRecommended: id !== 'amazon' && id !== 'aliexpress',
       deduplicate: id !== 'amazon',
       sortByPrice: false,
     }])
@@ -92,13 +92,18 @@
   }
   function deduplicate(items, platformSettings) {
     if (!platformSettings.deduplicate) return;
+    // AliExpress titles are SEO-heavy and often near-identical across distinct
+    // variants. Keep the global control effective, but require 5% more overlap.
+    const threshold = platformId === 'aliexpress'
+      ? Math.min(0.99, settings.similarityThreshold + 0.05)
+      : settings.similarityThreshold;
     const eligible = items.filter((item) => !item.reason && item.facts.total != null);
     const claimed = new Set();
     eligible.forEach((item, index) => {
       if (claimed.has(item.card)) return;
       const group = [item];
       eligible.slice(index + 1).forEach((candidate) => {
-        if (!claimed.has(candidate.card) && detector.areDuplicates(item.facts, candidate.facts, settings.similarityThreshold)) {
+        if (!claimed.has(candidate.card) && detector.areDuplicates(item.facts, candidate.facts, threshold)) {
           group.push(candidate);
         }
       });

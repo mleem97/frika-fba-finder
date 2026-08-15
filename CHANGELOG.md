@@ -4,6 +4,15 @@ All notable changes to this project are documented here. The project follows Sem
 
 ## [Unreleased]
 
+## [2.0.1] - 2026-08-15
+
+### Fixed
+
+- Relaxed AliExpress filtering so broad recommendation tracking metadata no longer hides normal search results.
+- Disabled recommendation filtering by default on AliExpress while keeping sponsored-result removal enabled.
+- Increased duplicate-match confidence on AliExpress to avoid grouping similar but distinct variants.
+- Migrated untouched AliExpress 2.0.0 defaults without overwriting customized platform settings.
+
 ## [2.0.0] - 2026-08-15
 
 ### Added

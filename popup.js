@@ -6,9 +6,13 @@
     amazon: 'Amazon', aliexpress: 'AliExpress', alibaba: 'Alibaba', temu: 'Temu', shein: 'SHEIN',
     dhgate: 'DHgate', banggood: 'Banggood', ebay: 'eBay',
   };
-  const platformDefaults = {
-    enabled: true, hideSponsored: true, hideRecommended: true, deduplicate: true, sortByPrice: false,
-  };
+  const platformDefaults = (id) => ({
+    enabled: true,
+    hideSponsored: true,
+    hideRecommended: id !== 'amazon' && id !== 'aliexpress',
+    deduplicate: id !== 'amazon',
+    sortByPrice: false,
+  });
   const statKeys = ['hidden', 'sponsored', 'duplicate', 'recommended', 'fbm', 'unknown'];
   let currentPlatformId = null;
   let savedSettings = { enabled: true, platformSettings: {} };
@@ -42,15 +46,16 @@
   }
   function renderPlatformSettings() {
     if (!currentPlatformId) return;
-    const platform = { ...platformDefaults, ...(savedSettings.platformSettings[currentPlatformId] || {}) };
-    Object.keys(platformDefaults).filter((key) => key !== 'sortByPrice').forEach((key) => {
+    const defaults = platformDefaults(currentPlatformId);
+    const platform = { ...defaults, ...(savedSettings.platformSettings[currentPlatformId] || {}) };
+    Object.keys(defaults).filter((key) => key !== 'sortByPrice').forEach((key) => {
       document.getElementById(key === 'enabled' ? 'platformEnabled' : key).checked = Boolean(platform[key]);
     });
   }
   async function savePlatformSetting(key, value) {
     const platformSettings = structuredClone(savedSettings.platformSettings || {});
     platformSettings[currentPlatformId] = {
-      ...platformDefaults, ...(platformSettings[currentPlatformId] || {}), [key]: value,
+      ...platformDefaults(currentPlatformId), ...(platformSettings[currentPlatformId] || {}), [key]: value,
     };
     savedSettings.platformSettings = platformSettings;
     await setStorage('sync', { platformSettings });

@@ -5,6 +5,7 @@
   const BADGE_COLOR = '#ffb000';
   const BADGE_TEXT_COLOR = '#17202b';
   const PLATFORM_IDS = ['amazon', 'aliexpress', 'alibaba', 'temu', 'shein', 'dhgate', 'banggood', 'ebay'];
+  const SETTINGS_SCHEMA_VERSION = 2;
 
   function initializeBadge() {
     extensionApi.action.setBadgeBackgroundColor({ color: BADGE_COLOR });
@@ -21,10 +22,27 @@
         update.platformSettings = Object.fromEntries(PLATFORM_IDS.map((id) => [id, {
           enabled: true,
           hideSponsored: id === 'amazon' && saved.hideSponsored !== undefined ? saved.hideSponsored : true,
-          hideRecommended: id !== 'amazon',
+          hideRecommended: id !== 'amazon' && id !== 'aliexpress',
           deduplicate: id !== 'amazon',
           sortByPrice: false,
         }]));
+      } else if ((saved.settingsSchemaVersion || 1) < SETTINGS_SCHEMA_VERSION) {
+        const aliExpress = saved.platformSettings.aliexpress;
+        const untouchedAliExpressDefaults = aliExpress
+          && aliExpress.enabled !== false
+          && aliExpress.hideSponsored !== false
+          && aliExpress.hideRecommended === true
+          && aliExpress.deduplicate !== false
+          && aliExpress.sortByPrice !== true;
+        if (untouchedAliExpressDefaults) {
+          update.platformSettings = {
+            ...saved.platformSettings,
+            aliexpress: { ...aliExpress, hideRecommended: false },
+          };
+        }
+      }
+      if ((saved.settingsSchemaVersion || 1) < SETTINGS_SCHEMA_VERSION) {
+        update.settingsSchemaVersion = SETTINGS_SCHEMA_VERSION;
       }
       if (saved.viewMode === 'red-border') update.viewMode = 'mark';
       if (Object.keys(update).length > 0) extensionApi.storage.sync.set(update);

@@ -9,7 +9,7 @@
     hideFBM: true, hideUnknown: true, strictPrime: false,
   };
   const platformDefaults = (id) => ({
-    enabled: true, hideSponsored: true, hideRecommended: id !== 'amazon',
+    enabled: true, hideSponsored: true, hideRecommended: id !== 'amazon' && id !== 'aliexpress',
     deduplicate: id !== 'amazon', sortByPrice: false,
   });
 

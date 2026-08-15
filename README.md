@@ -7,7 +7,7 @@ A local, privacy-first browser extension that repairs Amazon FBA filtering and i
 | Marketplace | Sponsored results | Inserted recommendations | Exact duplicate grouping | Price + shipping | Special handling |
 | --- | --- | --- | --- | --- | --- |
 | Amazon | Yes | Optional | Optional | Yes | FBA, FBM, unknown fulfillment, and Prime are separate signals |
-| AliExpress | Yes | Yes | Yes | Yes | Resilient link fallback for frequently changing card classes |
+| AliExpress | Yes | Yes | Optional | Yes | Conservative recommendation and duplicate detection; resilient link fallback |
 | Alibaba | Yes | Yes | Yes | Yes | Minimum order quantity is included in comparable total cost |
 | Temu | Yes | Yes | Yes | Yes | Stable attributes plus product-link fallback |
 | SHEIN | Yes | Yes | Yes | Yes | Fashion-card variants and localized domains |

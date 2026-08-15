@@ -3,6 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const packageVersion = JSON.parse(await readFile(path.join(root, 'package.json'), 'utf8')).version;
 const required = [
   'background.js', 'content.js', 'detector.js', 'popup.html', 'popup.js',
   'options.html', 'options.js', 'ui.css', 'whats-new.html', 'whats-new.js',
@@ -13,7 +14,7 @@ for (const target of ['chromium', 'firefox']) {
   const manifestPath = path.join(root, 'manifests', `manifest.${target}.json`);
   const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
   if (manifest.manifest_version !== 3) throw new Error(`${target}: manifest_version must be 3`);
-  if (manifest.version !== '2.0.0') throw new Error(`${target}: unexpected version`);
+  if (manifest.version !== packageVersion) throw new Error(`${target}: version does not match package.json`);
   if (target === 'chromium' && !manifest.background?.service_worker) throw new Error('Chromium service worker missing');
   if (target === 'firefox' && !manifest.background?.scripts) throw new Error('Firefox background scripts missing');
   if (target === 'firefox' && manifest.browser_specific_settings?.gecko?.data_collection_permissions?.required?.[0] !== 'none') {

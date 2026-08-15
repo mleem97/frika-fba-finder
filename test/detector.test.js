@@ -92,3 +92,13 @@ test('finds a fallback AliExpress product link when wrapper classes change', () 
   const root = { querySelectorAll(selector) { return selector === 'a[href*="/item/"]' ? [product] : []; } };
   assert.deepEqual(detector.findProductCards(root, 'aliexpress'), [product]);
 });
+
+test('does not treat AliExpress recommendation tracking metadata as a recommendation', () => {
+  const product = card({
+    text: 'USB C Ladegerät 65W',
+    present: ['data-spm*="recommend"'],
+    selectorText: { '[class*="price--current"]': '12,99 €' },
+  });
+  const facts = detector.inspectProduct(product, 'aliexpress');
+  assert.equal(facts.recommended, false);
+});

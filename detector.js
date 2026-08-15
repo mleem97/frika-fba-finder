@@ -69,7 +69,9 @@
       priceSelectors: ['[class*="price--current"]', '[class*="price-sale"]', ...COMMON_PRICE_SELECTORS],
       shippingSelectors: COMMON_SHIPPING_SELECTORS,
       sponsoredSelectors: ['[class*="sponsor" i]', '[data-spm*="sponsor" i]'],
-      recommendedSelectors: ['[class*="recommend" i]', '[data-spm*="recommend" i]'],
+      // AliExpress uses "recommend" in broad tracking metadata, including on
+      // ordinary search cards. Only trust explicit recommendation semantics.
+      recommendedSelectors: ['[aria-label*="recommended" i]', '[title*="recommended" i]'],
     },
     alibaba: {
       label: 'Alibaba', host: /(^|\.)alibaba\.com$/i,
